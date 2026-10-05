@@ -11,13 +11,12 @@
     required this.total,
   });
 
-  int get totalPages => total == 0 ? 1 : (total / size).ceil();
-  bool get hasPrevious => page > 1;
-  bool get hasNext => page < totalPages;
+  factory PageResult.empty() => const PageResult(
+    items: [],
+    page: 1,
+    size: 5,
+    total: 0,
+  );
 
-  PageResult.empty()
-      : items = <T>[],
-        page = 1,
-        size = 10,
-        total = 0;
+  int get totalPages => (total / size).ceil();
 }
