@@ -2,8 +2,9 @@
 import 'package:flutter/foundation.dart';
 import 'config.dart';
 import 'api_exceptions.dart';
+import 'token_holder.dart';
 
-Dio buildDio({String? Function()? tokenProvider}) {
+Dio buildDio({Future<void> Function()? onSessionExpired}) {
   final dio = Dio(
     BaseOptions(
       baseUrl: apiBaseUrl,
@@ -17,7 +18,7 @@ Dio buildDio({String? Function()? tokenProvider}) {
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) {
-        final token = tokenProvider?.call();
+        final token = globalTokens.accessToken;
         if (token != null) {
           options.headers['Authorization'] = 'Bearer $token';
         }
@@ -45,32 +46,59 @@ Dio buildDio({String? Function()? tokenProvider}) {
         return handler.next(response);
       },
       onError: (error, handler) async {
-        if (kDebugMode) {
-          debugPrint('[API СБОЙ] ${error.requestOptions.uri}: ${error.type}');
-        }
+        final status = error.response?.statusCode;
+        final path = error.requestOptions.path;
 
-        // Автоповтор (Retry): до 3 попыток только для GET
-        final req = error.requestOptions;
-        if (req.method.toUpperCase() == 'GET' &&
-            (error.type == DioExceptionType.connectionError ||
-             error.type == DioExceptionType.connectionTimeout)) {
-          int retries = req.extra['retry_count'] ?? 0;
-          if (retries < 3) {
-            retries++;
-            req.extra['retry_count'] = retries;
-            final delay = Duration(milliseconds: 500 * (1 << (retries - 1)));
-            if (kDebugMode) {
-              debugPrint('[API Retry] Повтор запроса ($retries/3) через ${delay.inMilliseconds}мс...');
-            }
-            await Future.delayed(delay);
+        // 1. Тихое обновление токена (Silent Refresh) при 401 (ПР5)
+        if (status == 401 && !path.contains('/auth/')) {
+          final refresh = globalTokens.refreshToken;
+          if (refresh != null) {
             try {
-              final response = await dio.fetch(req);
+              if (kDebugMode) debugPrint('[API] Токен истек. Выполняем silent refresh...');
+              final refreshDio = Dio(BaseOptions(baseUrl: apiBaseUrl));
+              final refreshRes = await refreshDio.post('/auth/refresh', data: {'refreshToken': refresh});
+              final newAccess = refreshRes.data['accessToken'] as String;
+
+              globalTokens.accessToken = newAccess;
+
+              final retryOptions = error.requestOptions;
+              retryOptions.headers['Authorization'] = 'Bearer $newAccess';
+              final response = await dio.fetch(retryOptions);
               return handler.resolve(response);
             } catch (e) {
-              if (e is DioException) return handler.next(e);
+              if (kDebugMode) debugPrint('[API] Silent refresh не удался, завершаем сессию.');
+              globalTokens.clear();
+              await onSessionExpired?.call();
             }
+          } else {
+            await onSessionExpired?.call();
           }
         }
+
+        // 2. Автоматический повтор при сетевом сбое (ПР4, оценка «5»)
+        final isGet = error.requestOptions.method.toUpperCase() == 'GET';
+        final isNetworkError = error.type == DioExceptionType.connectionError ||
+                               error.type == DioExceptionType.connectionTimeout ||
+                               error.type == DioExceptionType.sendTimeout ||
+                               error.type == DioExceptionType.receiveTimeout;
+
+        int retryCount = error.requestOptions.extra['retry_count'] ?? 0;
+        if (isGet && isNetworkError && retryCount < 3) {
+          retryCount++;
+          error.requestOptions.extra['retry_count'] = retryCount;
+          final delayMs = retryCount * 500;
+          if (kDebugMode) {
+            debugPrint('[API] Сетевой сбой GET (${error.requestOptions.uri}). Попытка $retryCount из 3 через $delayMs мс...');
+          }
+          await Future.delayed(Duration(milliseconds: delayMs));
+          try {
+            final response = await dio.fetch(error.requestOptions);
+            return handler.resolve(response);
+          } on DioException catch (e) {
+            return handler.next(e);
+          } catch (_) {}
+        }
+
         return handler.next(error);
       },
     ),

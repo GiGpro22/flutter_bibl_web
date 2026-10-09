@@ -2,7 +2,9 @@
 import 'package:provider/provider.dart';
 import '../core/api_exceptions.dart';
 import '../core/validators.dart';
+import '../models/author.dart';
 import '../models/book.dart';
+import '../models/genre.dart';
 import '../models/publisher.dart';
 import '../state/library_provider.dart';
 import '../widgets/entity_form_scaffold.dart';
@@ -82,6 +84,197 @@ class _BookFormScreenState extends State<BookFormScreen> {
     _pagesController.dispose();
     _copiesTotalController.dispose();
     super.dispose();
+  }
+
+  Future<void> _showAddPublisherDialog() async {
+    final nameCtrl = TextEditingController();
+    final cityCtrl = TextEditingController(text: 'Москва');
+    final dialogFormKey = GlobalKey<FormState>();
+
+    final created = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Новое издательство'),
+        content: Form(
+          key: dialogFormKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: nameCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Название издательства *',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) => (v == null || v.trim().isEmpty) ? 'Введите название' : null,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: cityCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Город *',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) => (v == null || v.trim().isEmpty) ? 'Введите город' : null,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Отмена')),
+          FilledButton(
+            onPressed: () {
+              if (dialogFormKey.currentState!.validate()) Navigator.of(ctx).pop(true);
+            },
+            child: const Text('Добавить'),
+          ),
+        ],
+      ),
+    );
+
+    if (created != true || !mounted) return;
+
+    final provider = context.read<LibraryProvider>();
+    final allGenreIds = provider.genres.map((g) => g.id).toList();
+    final newPub = Publisher.fromJson({
+      'id': 0,
+      'name': nameCtrl.text.trim(),
+      'city': cityCtrl.text.trim(),
+      'supportedGenreIds': allGenreIds,
+    });
+    await provider.savePublisher(newPub);
+    final added = provider.publishers.last;
+    setState(() {
+      _publisherId = added.id;
+      _markDirty();
+    });
+  }
+
+  Future<void> _showAddAuthorDialog() async {
+    final nameCtrl = TextEditingController();
+    final countryCtrl = TextEditingController(text: 'Россия');
+    final dialogFormKey = GlobalKey<FormState>();
+
+    final created = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Новый автор'),
+        content: Form(
+          key: dialogFormKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: nameCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'ФИО автора *',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) => (v == null || v.trim().isEmpty) ? 'Введите имя автора' : null,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: countryCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Страна',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Отмена')),
+          FilledButton(
+            onPressed: () {
+              if (dialogFormKey.currentState!.validate()) Navigator.of(ctx).pop(true);
+            },
+            child: const Text('Добавить'),
+          ),
+        ],
+      ),
+    );
+
+    if (created != true || !mounted) return;
+
+    final provider = context.read<LibraryProvider>();
+    final newAuthor = Author.fromJson({
+      'id': 0,
+      'name': nameCtrl.text.trim(),
+      'country': countryCtrl.text.trim().isEmpty ? 'Россия' : countryCtrl.text.trim(),
+      'birthYear': 1980,
+      'biography': '',
+    });
+    await provider.saveAuthor(newAuthor);
+    final added = provider.authors.last;
+    setState(() {
+      _authorIds = [..._authorIds, added.id];
+      _markDirty();
+    });
+  }
+
+  Future<void> _showAddGenreDialog() async {
+    final nameCtrl = TextEditingController();
+    final dialogFormKey = GlobalKey<FormState>();
+
+    final created = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Новый жанр'),
+        content: Form(
+          key: dialogFormKey,
+          child: TextFormField(
+            controller: nameCtrl,
+            decoration: const InputDecoration(
+              labelText: 'Название жанра *',
+              border: OutlineInputBorder(),
+            ),
+            validator: (v) => (v == null || v.trim().isEmpty) ? 'Введите название жанра' : null,
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Отмена')),
+          FilledButton(
+            onPressed: () {
+              if (dialogFormKey.currentState!.validate()) Navigator.of(ctx).pop(true);
+            },
+            child: const Text('Добавить'),
+          ),
+        ],
+      ),
+    );
+
+    if (created != true || !mounted) return;
+
+    final provider = context.read<LibraryProvider>();
+    final newGenre = Genre.fromJson({
+      'id': 0,
+      'name': nameCtrl.text.trim(),
+      'description': '',
+    });
+    await provider.saveGenre(newGenre);
+    final added = provider.genres.last;
+
+    if (_publisherId != null) {
+      final currentPub = provider.publishers.cast<Publisher?>().firstWhere(
+        (p) => p?.id == _publisherId,
+        orElse: () => null,
+      );
+      if (currentPub != null && !currentPub.supportedGenreIds.contains(added.id)) {
+        final updatedPub = Publisher.fromJson({
+          'id': currentPub.id,
+          'name': currentPub.name,
+          'city': currentPub.city,
+          'supportedGenreIds': [...currentPub.supportedGenreIds, added.id],
+        });
+        await provider.savePublisher(updatedPub);
+      }
+    }
+
+    setState(() {
+      _genreIds = [..._genreIds, added.id];
+      _markDirty();
+    });
   }
 
   Future<void> _submit() async {
@@ -208,20 +401,35 @@ class _BookFormScreenState extends State<BookFormScreen> {
             validator: V.combine([V.required(), V.integer(min: 0)]),
           ),
           const SizedBox(height: 20),
-          DropdownButtonFormField<int>(
-            value: publishers.any((p) => p.id == _publisherId) ? _publisherId : null,
-            decoration: const InputDecoration(labelText: 'Издательство (справочник) *', border: OutlineInputBorder()),
-            items: publishers.map((p) => DropdownMenuItem(value: p.id, child: Text('${p.name} (${p.city})'))).toList(),
-            onChanged: (val) {
-              _markDirty();
-              setState(() => _publisherId = val);
-            },
-            validator: (val) => val == null ? 'Выберите издательство' : null,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: DropdownButtonFormField<int>(
+                  value: publishers.any((p) => p.id == _publisherId) ? _publisherId : null,
+                  decoration: const InputDecoration(labelText: 'Издательство (справочник) *', border: OutlineInputBorder()),
+                  items: publishers.map((p) => DropdownMenuItem(value: p.id, child: Text('${p.name} (${p.city})'))).toList(),
+                  onChanged: (val) {
+                    _markDirty();
+                    setState(() => _publisherId = val);
+                  },
+                  validator: (val) => val == null ? 'Выберите издательство' : null,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: IconButton.filledTonal(
+                  icon: const Icon(Icons.add),
+                  tooltip: 'Добавить издательство',
+                  onPressed: () => _showAddPublisherDialog(),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 20),
           FormField<List<int>>(
-            initialValue: _authorIds,
-            validator: (val) => (val == null || val.isEmpty) ? 'Выберите хотя бы одного автора' : null,
+            validator: (_) => _authorIds.isEmpty ? 'Выберите хотя бы одного автора' : null,
             builder: (field) {
               return InputDecorator(
                 decoration: InputDecoration(
@@ -232,28 +440,41 @@ class _BookFormScreenState extends State<BookFormScreen> {
                 child: Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: authors.map((a) {
-                    final selected = field.value!.contains(a.id);
-                    return FilterChip(
-                      label: Text(a.name),
-                      selected: selected,
-                      onSelected: (_) {
-                        _markDirty();
-                        final next = [...field.value!];
-                        selected ? next.remove(a.id) : next.add(a.id);
-                        field.didChange(next);
-                        setState(() => _authorIds = next);
+                  children: [
+                    ...authors.map((a) {
+                      final selected = _authorIds.contains(a.id);
+                      return FilterChip(
+                        label: Text(a.name),
+                        selected: selected,
+                        onSelected: (_) {
+                          _markDirty();
+                          setState(() {
+                            if (selected) {
+                              _authorIds.remove(a.id);
+                            } else {
+                              _authorIds.add(a.id);
+                            }
+                          });
+                          field.didChange(_authorIds);
+                        },
+                      );
+                    }),
+                    ActionChip(
+                      avatar: const Icon(Icons.add, size: 18),
+                      label: const Text('Добавить автора'),
+                      onPressed: () async {
+                        await _showAddAuthorDialog();
+                        field.didChange(_authorIds);
                       },
-                    );
-                  }).toList(),
+                    ),
+                  ],
                 ),
               );
             },
           ),
           const SizedBox(height: 20),
           FormField<List<int>>(
-            initialValue: _genreIds,
-            validator: (val) => (val == null || val.isEmpty) ? 'Выберите жанр' : null,
+            validator: (_) => _genreIds.isEmpty ? 'Выберите жанр' : null,
             builder: (field) {
               return InputDecorator(
                 decoration: InputDecoration(
@@ -264,20 +485,34 @@ class _BookFormScreenState extends State<BookFormScreen> {
                 child: Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: availableGenres.map((g) {
-                    final selected = _genreIds.contains(g.id);
-                    return FilterChip(
-                      label: Text(g.name),
-                      selected: selected,
-                      onSelected: (_) {
-                        _markDirty();
-                        final next = [..._genreIds];
-                        selected ? next.remove(g.id) : next.add(g.id);
-                        field.didChange(next);
-                        setState(() => _genreIds = next);
+                  children: [
+                    ...availableGenres.map((g) {
+                      final selected = _genreIds.contains(g.id);
+                      return FilterChip(
+                        label: Text(g.name),
+                        selected: selected,
+                        onSelected: (_) {
+                          _markDirty();
+                          setState(() {
+                            if (selected) {
+                              _genreIds.remove(g.id);
+                            } else {
+                              _genreIds.add(g.id);
+                            }
+                          });
+                          field.didChange(_genreIds);
+                        },
+                      );
+                    }),
+                    ActionChip(
+                      avatar: const Icon(Icons.add, size: 18),
+                      label: const Text('Добавить жанр'),
+                      onPressed: () async {
+                        await _showAddGenreDialog();
+                        field.didChange(_genreIds);
                       },
-                    );
-                  }).toList(),
+                    ),
+                  ],
                 ),
               );
             },

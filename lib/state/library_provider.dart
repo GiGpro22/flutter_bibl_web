@@ -19,7 +19,6 @@ class LibraryProvider extends ChangeNotifier {
     refreshAll();
   }
 
-  // Состояние книг (REST API)
   PageStatus bookStatus = PageStatus.loading;
   String bookError = '';
   List<Book> books = [];
@@ -31,7 +30,6 @@ class LibraryProvider extends ChangeNotifier {
   bool bookShowDeleted = false;
   CancelToken? _searchCancelToken;
 
-  // Справочники (кэшируются)
   List<Author> authors = [];
   List<Genre> genres = [];
   List<Publisher> publishers = [];
@@ -46,25 +44,39 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> fetchDictionaries({bool force = false}) async {
     if (_dictionariesLoaded && !force) return;
     try {
-      final res = await Future.wait([
-        _dio.get('/authors'),
-        _dio.get('/genres'),
-        _dio.get('/publishers'),
-        _dio.get('/readers'),
-      ]);
-
-      authors = ((res[0].data as Map)['items'] as List)
+      final aRes = await _dio.get('/authors');
+      authors = ((aRes.data as Map)['items'] as List)
           .map((e) => Author.fromJson(e as Map<String, dynamic>)).toList();
-      genres = ((res[1].data as Map)['items'] as List)
-          .map((e) => Genre.fromJson(e as Map<String, dynamic>)).toList();
-      publishers = ((res[2].data as Map)['items'] as List)
-          .map((e) => Publisher.fromJson(e as Map<String, dynamic>)).toList();
-      readers = ((res[3].data as Map)['items'] as List)
-          .map((e) => Reader.fromJson(e as Map<String, dynamic>)).toList();
+    } catch (e) {
+      debugPrint('[LibraryProvider] Ошибка authors: $e');
+    }
 
-      _dictionariesLoaded = true;
-      notifyListeners();
-    } catch (_) {}
+    try {
+      final gRes = await _dio.get('/genres');
+      genres = ((gRes.data as Map)['items'] as List)
+          .map((e) => Genre.fromJson(e as Map<String, dynamic>)).toList();
+    } catch (e) {
+      debugPrint('[LibraryProvider] Ошибка genres: $e');
+    }
+
+    try {
+      final pRes = await _dio.get('/publishers');
+      publishers = ((pRes.data as Map)['items'] as List)
+          .map((e) => Publisher.fromJson(e as Map<String, dynamic>)).toList();
+    } catch (e) {
+      debugPrint('[LibraryProvider] Ошибка publishers: $e');
+    }
+
+    try {
+      final rRes = await _dio.get('/readers');
+      readers = ((rRes.data as Map)['items'] as List)
+          .map((e) => Reader.fromJson(e as Map<String, dynamic>)).toList();
+    } catch (e) {
+      debugPrint('[LibraryProvider] Ошибка readers: $e');
+    }
+
+    _dictionariesLoaded = true;
+    notifyListeners();
   }
 
   Future<void> fetchBooks({int? simulateFail, int? simulateDelay}) async {
@@ -126,7 +138,6 @@ class LibraryProvider extends ChangeNotifier {
     fetchBooks();
   }
 
-  // --- CRUD для Книг ---
   Future<void> saveBook(Book book) async {
     if (book.id == 0) {
       await bookRepo.create(book);
@@ -151,7 +162,6 @@ class LibraryProvider extends ChangeNotifier {
     await fetchBooks();
   }
 
-  // --- CRUD для Авторов ---
   Future<void> saveAuthor(Author author) async {
     if (author.id == 0) {
       final newId = authors.isEmpty ? 1 : (authors.map((a) => a.id).reduce((a, b) => a > b ? a : b) + 1);
@@ -168,7 +178,6 @@ class LibraryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --- CRUD для Жанров ---
   Future<void> saveGenre(Genre genre) async {
     if (genre.id == 0) {
       final newId = genres.isEmpty ? 1 : (genres.map((g) => g.id).reduce((a, b) => a > b ? a : b) + 1);
@@ -185,7 +194,6 @@ class LibraryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --- CRUD для Издательств ---
   Future<void> savePublisher(Publisher publisher) async {
     if (publisher.id == 0) {
       final newId = publishers.isEmpty ? 1 : (publishers.map((p) => p.id).reduce((a, b) => a > b ? a : b) + 1);
@@ -202,7 +210,6 @@ class LibraryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --- CRUD для Читателей ---
   Future<void> saveReader(Reader reader) async {
     if (reader.id == 0) {
       final newId = readers.isEmpty ? 1 : (readers.map((r) => r.id).reduce((a, b) => a > b ? a : b) + 1);
@@ -219,7 +226,6 @@ class LibraryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --- Проверки уникальности и связей ---
   bool isReaderEmailFree(String email, {int? exceptId}) {
     final clean = email.trim().toLowerCase();
     if (clean.isEmpty) return true;
