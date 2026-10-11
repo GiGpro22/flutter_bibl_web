@@ -42,7 +42,7 @@ jobs:
 
       - name: Build Web Release
         run: |
-          flutter build web --release --base-href "/flutter_bibl_web/" --dart-define=API_BASE_URL=https://api.example.com/api
+          flutter build web --release --base-href "/flutter_bibl_web/" --dart-define=API_BASE_URL=http://localhost:8080/api
           cp build/web/index.html build/web/404.html
 
       - name: Setup Pages
