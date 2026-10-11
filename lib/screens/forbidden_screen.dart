@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ForbiddenScreen extends StatelessWidget {
@@ -16,11 +16,16 @@ class ForbiddenScreen extends StatelessWidget {
             children: [
               const Icon(Icons.gpp_bad, size: 72, color: Colors.red),
               const SizedBox(height: 16),
-              const Text('403 - Недостаточно прав', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              const Text('403 - Недостаточно прав',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
-              const Text('Ваша учетная запись не имеет прав для просмотра этого раздела.', textAlign: TextAlign.center),
+              const Text(
+                  'Ваша учетная запись не имеет прав для просмотра этого раздела.',
+                  textAlign: TextAlign.center),
               const SizedBox(height: 24),
-              FilledButton(onPressed: () => context.go('/'), child: const Text('Вернуться в каталог')),
+              FilledButton(
+                  onPressed: () => context.go('/'),
+                  child: const Text('Вернуться в каталог')),
             ],
           ),
         ),

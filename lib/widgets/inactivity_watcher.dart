@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,7 +37,9 @@ class _InactivityWatcherState extends State<InactivityWatcher> {
   int _remainingSeconds = 30;
 
   Duration get _effectiveWarning =>
-      widget.warningBefore ?? widget.warningDuration ?? const Duration(seconds: 30);
+      widget.warningBefore ??
+      widget.warningDuration ??
+      const Duration(seconds: 30);
 
   @override
   void initState() {
@@ -95,7 +97,8 @@ class _InactivityWatcherState extends State<InactivityWatcher> {
     final idleSeconds = totalDelay > Duration.zero ? totalDelay.inSeconds : 10;
 
     if (kDebugMode) {
-      debugPrint('[INACTIVITY] Таймер запущен: предупреждение через $idleSeconds сек.');
+      debugPrint(
+          '[INACTIVITY] Таймер запущен: предупреждение через $idleSeconds сек.');
     }
 
     int elapsed = 0;
@@ -140,14 +143,19 @@ class _InactivityWatcherState extends State<InactivityWatcher> {
   }
 
   void _continueSession() {
-    if (kDebugMode) debugPrint('[INACTIVITY] Пользователь нажал "Продолжить работу".');
+    if (kDebugMode) {
+      debugPrint('[INACTIVITY] Пользователь нажал "Продолжить работу".');
+    }
     _cancelAll();
     _handleActivity();
   }
 
   void _logout() async {
     _cancelAll();
-    if (kDebugMode) debugPrint('[INACTIVITY] Время истекло, автоматический выход из системы.');
+    if (kDebugMode) {
+      debugPrint(
+          '[INACTIVITY] Время истекло, автоматический выход из системы.');
+    }
     if (widget.onTimeout != null) {
       widget.onTimeout!();
     } else {

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../core/api_exceptions.dart';
@@ -50,13 +50,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_hasMinLen || !_hasDigit || !_hasSpecial) return;
     if (!_formKey.currentState!.validate() || _isLoading) return;
 
-    setState(() { _isLoading = true; _errorMessage = null; });
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
     try {
       await context.read<AuthNotifier>().register(
-        _emailController.text,
-        _passwordController.text,
-        _nameController.text,
-      );
+            _emailController.text,
+            _passwordController.text,
+            _nameController.text,
+          );
       if (mounted) context.go('/');
     } on ApiException catch (e) {
       setState(() => _errorMessage = e.message);
@@ -82,42 +85,64 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text('Новый читатель', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                    const Text('Новый читатель',
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 16),
                     if (_errorMessage != null)
                       Container(
                         padding: const EdgeInsets.all(10),
                         margin: const EdgeInsets.only(bottom: 12),
-                        decoration: BoxDecoration(color: Colors.red.shade100, borderRadius: BorderRadius.circular(8)),
-                        child: Text(_errorMessage!, style: TextStyle(color: Colors.red.shade900)),
+                        decoration: BoxDecoration(
+                            color: Colors.red.shade100,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Text(_errorMessage!,
+                            style: TextStyle(color: Colors.red.shade900)),
                       ),
                     TextFormField(
                       controller: _nameController,
-                      decoration: const InputDecoration(labelText: 'Полное имя', border: OutlineInputBorder()),
-                      validator: (val) => val == null || val.isEmpty ? 'Введите имя' : null,
+                      decoration: const InputDecoration(
+                          labelText: 'Полное имя',
+                          border: OutlineInputBorder()),
+                      validator: (val) =>
+                          val == null || val.isEmpty ? 'Введите имя' : null,
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _emailController,
-                      decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder()),
-                      validator: (val) => val == null || !val.contains('@') ? 'Корректный email' : null,
+                      decoration: const InputDecoration(
+                          labelText: 'Email', border: OutlineInputBorder()),
+                      validator: (val) => val == null || !val.contains('@')
+                          ? 'Корректный email'
+                          : null,
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: const InputDecoration(labelText: 'Пароль', border: OutlineInputBorder()),
+                      decoration: const InputDecoration(
+                          labelText: 'Пароль', border: OutlineInputBorder()),
                     ),
                     const SizedBox(height: 12),
                     // Живой индикатор сложности пароля
                     _buildCheckRow('Не менее 8 символов', _hasMinLen),
                     _buildCheckRow('Содержит цифру', _hasDigit),
-                    _buildCheckRow(r'Содержит спецсимвол (!@#$...)', _hasSpecial),
+                    _buildCheckRow(
+                        r'Содержит спецсимвол (!@#$...)', _hasSpecial),
                     const SizedBox(height: 20),
                     FilledButton(
-                      onPressed: (_hasMinLen && _hasDigit && _hasSpecial && !_isLoading) ? _submit : null,
-                      child: _isLoading ? const CircularProgressIndicator(color: Colors.white) : const Text('Зарегистрироваться'),
+                      onPressed: (_hasMinLen &&
+                              _hasDigit &&
+                              _hasSpecial &&
+                              !_isLoading)
+                          ? _submit
+                          : null,
+                      child: _isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text('Зарегистрироваться'),
                     ),
-                    TextButton(onPressed: () => context.go('/login'), child: const Text('Уже есть аккаунт? Войти')),
+                    TextButton(
+                        onPressed: () => context.go('/login'),
+                        child: const Text('Уже есть аккаунт? Войти')),
                   ],
                 ),
               ),
@@ -131,9 +156,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildCheckRow(String label, bool passed) {
     return Row(
       children: [
-        Icon(passed ? Icons.check_circle : Icons.circle_outlined, size: 16, color: passed ? Colors.green : Colors.grey),
+        Icon(passed ? Icons.check_circle : Icons.circle_outlined,
+            size: 16, color: passed ? Colors.green : Colors.grey),
         const SizedBox(width: 8),
-        Text(label, style: TextStyle(fontSize: 12, color: passed ? Colors.green.shade800 : Colors.grey.shade700)),
+        Text(label,
+            style: TextStyle(
+                fontSize: 12,
+                color: passed ? Colors.green.shade800 : Colors.grey.shade700)),
       ],
     );
   }

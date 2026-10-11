@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/api_exceptions.dart';
@@ -33,7 +33,8 @@ class AuthNotifier extends ChangeNotifier {
     final sessionStart = _prefs.getInt(_kSessionStart) ?? 0;
 
     // Ограничение общей длительности сессии (например, 2 часа = 7200 сек)
-    if (sessionStart > 0 && DateTime.now().millisecondsSinceEpoch - sessionStart > 7200 * 1000) {
+    if (sessionStart > 0 &&
+        DateTime.now().millisecondsSinceEpoch - sessionStart > 7200 * 1000) {
       await logout();
       return;
     }
@@ -54,7 +55,8 @@ class AuthNotifier extends ChangeNotifier {
     } on UnauthorizedException {
       if (refresh != null) {
         try {
-          final refRes = await _dio.post('/auth/refresh', data: {'refreshToken': refresh});
+          final refRes =
+              await _dio.post('/auth/refresh', data: {'refreshToken': refresh});
           final newAccess = refRes.data['accessToken'] as String;
           globalTokens.accessToken = newAccess;
           await _prefs.setString(_kAccess, newAccess);
@@ -91,7 +93,8 @@ class AuthNotifier extends ChangeNotifier {
 
       await _prefs.setString(_kAccess, access);
       await _prefs.setString(_kRefresh, refresh);
-      await _prefs.setInt(_kSessionStart, DateTime.now().millisecondsSinceEpoch);
+      await _prefs.setInt(
+          _kSessionStart, DateTime.now().millisecondsSinceEpoch);
 
       _user = AppUser.fromJson(data['user'] as Map<String, dynamic>);
       _status = AuthStatus.authenticated;
@@ -118,7 +121,8 @@ class AuthNotifier extends ChangeNotifier {
 
       await _prefs.setString(_kAccess, access);
       await _prefs.setString(_kRefresh, refresh);
-      await _prefs.setInt(_kSessionStart, DateTime.now().millisecondsSinceEpoch);
+      await _prefs.setInt(
+          _kSessionStart, DateTime.now().millisecondsSinceEpoch);
 
       _user = AppUser.fromJson(data['user'] as Map<String, dynamic>);
       _status = AuthStatus.authenticated;
@@ -141,7 +145,11 @@ class AuthNotifier extends ChangeNotifier {
   // Метод для Эксперимента №17: подмена роли на клиенте
   void tamperRoleForExperiment(Role fakeRole) {
     if (_user != null) {
-      _user = AppUser(id: _user!.id, email: _user!.email, name: _user!.name, role: fakeRole);
+      _user = AppUser(
+          id: _user!.id,
+          email: _user!.email,
+          name: _user!.name,
+          role: fakeRole);
       notifyListeners();
     }
   }

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/validators.dart';
 import '../models/genre.dart';
@@ -26,7 +26,11 @@ class _GenreFormScreenState extends State<GenreFormScreen> {
     super.didChangeDependencies();
     if (_initialized) return;
     if (widget.isEditing) {
-      final genre = context.read<LibraryProvider>().genres.cast<Genre?>().firstWhere((g) => g?.id == widget.id, orElse: () => null);
+      final genre = context
+          .read<LibraryProvider>()
+          .genres
+          .cast<Genre?>()
+          .firstWhere((g) => g?.id == widget.id, orElse: () => null);
       if (genre != null) {
         _nameController.text = genre.name;
         _descController.text = genre.description;
@@ -62,7 +66,8 @@ class _GenreFormScreenState extends State<GenreFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.isEditing ? 'Редактировать жанр' : 'Новый жанр')),
+      appBar: AppBar(
+          title: Text(widget.isEditing ? 'Редактировать жанр' : 'Новый жанр')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Form(
@@ -74,20 +79,24 @@ class _GenreFormScreenState extends State<GenreFormScreen> {
               TextFormField(
                 controller: _nameController,
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(labelText: 'Название жанра *', border: OutlineInputBorder()),
+                decoration: const InputDecoration(
+                    labelText: 'Название жанра *',
+                    border: OutlineInputBorder()),
                 validator: V.combine([V.required(), V.length(min: 2, max: 50)]),
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _descController,
                 maxLines: 3,
-                decoration: const InputDecoration(labelText: 'Описание', border: OutlineInputBorder()),
+                decoration: const InputDecoration(
+                    labelText: 'Описание', border: OutlineInputBorder()),
                 validator: V.length(max: 300),
               ),
               const SizedBox(height: 32),
               FilledButton(
                 onPressed: _isSaving ? null : _submit,
-                child: Text(widget.isEditing ? 'Сохранить изменения' : 'Создать жанр'),
+                child: Text(
+                    widget.isEditing ? 'Сохранить изменения' : 'Создать жанр'),
               ),
             ],
           ),

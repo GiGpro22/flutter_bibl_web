@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../models/author.dart';
@@ -41,11 +41,13 @@ class AuthorDetailScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(author.name, style: Theme.of(context).textTheme.headlineMedium),
+                      Text(author.name,
+                          style: Theme.of(context).textTheme.headlineMedium),
                       const Divider(height: 32),
                       _detailRow('Страна', author.country),
                       _detailRow('Год рождения', '${author.birthYear}'),
-                      _detailRow('Статус', author.isDeleted ? 'Удалён' : 'Активен'),
+                      _detailRow(
+                          'Статус', author.isDeleted ? 'Удалён' : 'Активен'),
                     ],
                   ),
                 ),

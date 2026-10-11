@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class EntityFormScaffold extends StatelessWidget {
   final String title;
@@ -23,7 +23,8 @@ class EntityFormScaffold extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Несохранённые изменения'),
-        content: const Text('Данные формы были изменены. Вы уверены, что хотите уйти без сохранения?'),
+        content: const Text(
+            'Данные формы были изменены. Вы уверены, что хотите уйти без сохранения?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -71,7 +72,8 @@ class EntityFormScaffold extends StatelessWidget {
                           ? const SizedBox(
                               height: 20,
                               width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Colors.white),
                             )
                           : const Text('Сохранить'),
                     ),

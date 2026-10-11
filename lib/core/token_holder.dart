@@ -1,4 +1,4 @@
-﻿class TokenHolder {
+class TokenHolder {
   String? accessToken;
   String? refreshToken;
   void clear() {

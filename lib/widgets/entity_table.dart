@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class TableColumnSpec<T> {
   final String label;
@@ -56,7 +56,8 @@ class EntityTable<T> extends StatelessWidget {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: MediaQuery.sizeOf(context).width - 32),
+            constraints:
+                BoxConstraints(minWidth: MediaQuery.sizeOf(context).width - 32),
             child: DataTable(
               showCheckboxColumn: true,
               sortColumnIndex: sortColIndex,

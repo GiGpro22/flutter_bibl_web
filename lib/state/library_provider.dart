@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../core/api_exceptions.dart';
 import '../models/author.dart';
@@ -46,7 +46,8 @@ class LibraryProvider extends ChangeNotifier {
     try {
       final aRes = await _dio.get('/authors');
       authors = ((aRes.data as Map)['items'] as List)
-          .map((e) => Author.fromJson(e as Map<String, dynamic>)).toList();
+          .map((e) => Author.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       debugPrint('[LibraryProvider] Ошибка authors: $e');
     }
@@ -54,7 +55,8 @@ class LibraryProvider extends ChangeNotifier {
     try {
       final gRes = await _dio.get('/genres');
       genres = ((gRes.data as Map)['items'] as List)
-          .map((e) => Genre.fromJson(e as Map<String, dynamic>)).toList();
+          .map((e) => Genre.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       debugPrint('[LibraryProvider] Ошибка genres: $e');
     }
@@ -62,7 +64,8 @@ class LibraryProvider extends ChangeNotifier {
     try {
       final pRes = await _dio.get('/publishers');
       publishers = ((pRes.data as Map)['items'] as List)
-          .map((e) => Publisher.fromJson(e as Map<String, dynamic>)).toList();
+          .map((e) => Publisher.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       debugPrint('[LibraryProvider] Ошибка publishers: $e');
     }
@@ -70,7 +73,8 @@ class LibraryProvider extends ChangeNotifier {
     try {
       final rRes = await _dio.get('/readers');
       readers = ((rRes.data as Map)['items'] as List)
-          .map((e) => Reader.fromJson(e as Map<String, dynamic>)).toList();
+          .map((e) => Reader.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       debugPrint('[LibraryProvider] Ошибка readers: $e');
     }
@@ -164,7 +168,9 @@ class LibraryProvider extends ChangeNotifier {
 
   Future<void> saveAuthor(Author author) async {
     if (author.id == 0) {
-      final newId = authors.isEmpty ? 1 : (authors.map((a) => a.id).reduce((a, b) => a > b ? a : b) + 1);
+      final newId = authors.isEmpty
+          ? 1
+          : (authors.map((a) => a.id).reduce((a, b) => a > b ? a : b) + 1);
       authors.add(author.copyWith(id: newId));
     } else {
       final idx = authors.indexWhere((a) => a.id == author.id);
@@ -180,7 +186,9 @@ class LibraryProvider extends ChangeNotifier {
 
   Future<void> saveGenre(Genre genre) async {
     if (genre.id == 0) {
-      final newId = genres.isEmpty ? 1 : (genres.map((g) => g.id).reduce((a, b) => a > b ? a : b) + 1);
+      final newId = genres.isEmpty
+          ? 1
+          : (genres.map((g) => g.id).reduce((a, b) => a > b ? a : b) + 1);
       genres.add(genre.copyWith(id: newId));
     } else {
       final idx = genres.indexWhere((g) => g.id == genre.id);
@@ -196,7 +204,9 @@ class LibraryProvider extends ChangeNotifier {
 
   Future<void> savePublisher(Publisher publisher) async {
     if (publisher.id == 0) {
-      final newId = publishers.isEmpty ? 1 : (publishers.map((p) => p.id).reduce((a, b) => a > b ? a : b) + 1);
+      final newId = publishers.isEmpty
+          ? 1
+          : (publishers.map((p) => p.id).reduce((a, b) => a > b ? a : b) + 1);
       publishers.add(publisher.copyWith(id: newId));
     } else {
       final idx = publishers.indexWhere((p) => p.id == publisher.id);
@@ -212,7 +222,9 @@ class LibraryProvider extends ChangeNotifier {
 
   Future<void> saveReader(Reader reader) async {
     if (reader.id == 0) {
-      final newId = readers.isEmpty ? 1 : (readers.map((r) => r.id).reduce((a, b) => a > b ? a : b) + 1);
+      final newId = readers.isEmpty
+          ? 1
+          : (readers.map((r) => r.id).reduce((a, b) => a > b ? a : b) + 1);
       readers.add(reader.copyWith(id: newId));
     } else {
       final idx = readers.indexWhere((r) => r.id == reader.id);
@@ -229,13 +241,15 @@ class LibraryProvider extends ChangeNotifier {
   bool isReaderEmailFree(String email, {int? exceptId}) {
     final clean = email.trim().toLowerCase();
     if (clean.isEmpty) return true;
-    return !readers.any((r) => r.id != exceptId && r.email.trim().toLowerCase() == clean);
+    return !readers
+        .any((r) => r.id != exceptId && r.email.trim().toLowerCase() == clean);
   }
 
   bool isIsbnFree(String isbn, {int? exceptId}) {
     final clean = isbn.trim().toLowerCase();
     if (clean.isEmpty) return true;
-    return !books.any((b) => b.id != exceptId && b.isbn.trim().toLowerCase() == clean);
+    return !books
+        .any((b) => b.id != exceptId && b.isbn.trim().toLowerCase() == clean);
   }
 
   int getLinkedBooksCountForPublisher(int pubId) {

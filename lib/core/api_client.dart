@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'config.dart';
 import 'api_exceptions.dart';
@@ -54,9 +54,12 @@ Dio buildDio({Future<void> Function()? onSessionExpired}) {
           final refresh = globalTokens.refreshToken;
           if (refresh != null) {
             try {
-              if (kDebugMode) debugPrint('[API] Токен истек. Выполняем silent refresh...');
+              if (kDebugMode) {
+                debugPrint('[API] Токен истек. Выполняем silent refresh...');
+              }
               final refreshDio = Dio(BaseOptions(baseUrl: apiBaseUrl));
-              final refreshRes = await refreshDio.post('/auth/refresh', data: {'refreshToken': refresh});
+              final refreshRes = await refreshDio
+                  .post('/auth/refresh', data: {'refreshToken': refresh});
               final newAccess = refreshRes.data['accessToken'] as String;
 
               globalTokens.accessToken = newAccess;
@@ -66,7 +69,9 @@ Dio buildDio({Future<void> Function()? onSessionExpired}) {
               final response = await dio.fetch(retryOptions);
               return handler.resolve(response);
             } catch (e) {
-              if (kDebugMode) debugPrint('[API] Silent refresh не удался, завершаем сессию.');
+              if (kDebugMode) {
+                debugPrint('[API] Silent refresh не удался, завершаем сессию.');
+              }
               globalTokens.clear();
               await onSessionExpired?.call();
             }
@@ -78,9 +83,9 @@ Dio buildDio({Future<void> Function()? onSessionExpired}) {
         // 2. Автоматический повтор при сетевом сбое (ПР4, оценка «5»)
         final isGet = error.requestOptions.method.toUpperCase() == 'GET';
         final isNetworkError = error.type == DioExceptionType.connectionError ||
-                               error.type == DioExceptionType.connectionTimeout ||
-                               error.type == DioExceptionType.sendTimeout ||
-                               error.type == DioExceptionType.receiveTimeout;
+            error.type == DioExceptionType.connectionTimeout ||
+            error.type == DioExceptionType.sendTimeout ||
+            error.type == DioExceptionType.receiveTimeout;
 
         int retryCount = error.requestOptions.extra['retry_count'] ?? 0;
         if (isGet && isNetworkError && retryCount < 3) {
@@ -88,7 +93,8 @@ Dio buildDio({Future<void> Function()? onSessionExpired}) {
           error.requestOptions.extra['retry_count'] = retryCount;
           final delayMs = retryCount * 500;
           if (kDebugMode) {
-            debugPrint('[API] Сетевой сбой GET (${error.requestOptions.uri}). Попытка $retryCount из 3 через $delayMs мс...');
+            debugPrint(
+                '[API] Сетевой сбой GET (${error.requestOptions.uri}). Попытка $retryCount из 3 через $delayMs мс...');
           }
           await Future.delayed(Duration(milliseconds: delayMs));
           try {

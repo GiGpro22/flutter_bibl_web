@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +32,8 @@ class _BooksScreenState extends State<BooksScreen> {
     final queryFromUrl = BookQuery.fromQueryParams(params);
 
     // Синхронизируем текст только тогда, когда пользователь не печатает прямо сейчас
-    if (!_searchFocusNode.hasFocus && _searchController.text != queryFromUrl.search) {
+    if (!_searchFocusNode.hasFocus &&
+        _searchController.text != queryFromUrl.search) {
       _searchController.value = TextEditingValue(
         text: queryFromUrl.search,
         selection: TextSelection.collapsed(offset: queryFromUrl.search.length),
@@ -85,9 +86,11 @@ class _BooksScreenState extends State<BooksScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Подтверждение удаления'),
-        content: Text('Удалить выбранные книги (${notifier.selected.length} шт.)?'),
+        content:
+            Text('Удалить выбранные книги (${notifier.selected.length} шт.)?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Отмена')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Отмена')),
           FilledButton(
             onPressed: () {
               Navigator.pop(ctx);
@@ -159,11 +162,14 @@ class _BooksScreenState extends State<BooksScreen> {
                   child: DropdownButtonFormField<int?>(
                     value: q.genreId,
                     isDense: true,
-                    decoration: const InputDecoration(labelText: 'Жанр', border: OutlineInputBorder()),
+                    decoration: const InputDecoration(
+                        labelText: 'Жанр', border: OutlineInputBorder()),
                     items: [
-                      const DropdownMenuItem(value: null, child: Text('Все жанры')),
+                      const DropdownMenuItem(
+                          value: null, child: Text('Все жанры')),
                       ...DictionaryData.genres.entries.map(
-                        (e) => DropdownMenuItem(value: e.key, child: Text(e.value)),
+                        (e) => DropdownMenuItem(
+                            value: e.key, child: Text(e.value)),
                       ),
                     ],
                     onChanged: (val) => _updateUrl(q.copyWith(genreId: val)),
@@ -174,14 +180,19 @@ class _BooksScreenState extends State<BooksScreen> {
                   child: DropdownButtonFormField<int?>(
                     value: q.publisherId,
                     isDense: true,
-                    decoration: const InputDecoration(labelText: 'Издательство', border: OutlineInputBorder()),
+                    decoration: const InputDecoration(
+                        labelText: 'Издательство',
+                        border: OutlineInputBorder()),
                     items: [
-                      const DropdownMenuItem(value: null, child: Text('Все изд-ва')),
+                      const DropdownMenuItem(
+                          value: null, child: Text('Все изд-ва')),
                       ...DictionaryData.publishers.entries.map(
-                        (e) => DropdownMenuItem(value: e.key, child: Text(e.value)),
+                        (e) => DropdownMenuItem(
+                            value: e.key, child: Text(e.value)),
                       ),
                     ],
-                    onChanged: (val) => _updateUrl(q.copyWith(publisherId: val)),
+                    onChanged: (val) =>
+                        _updateUrl(q.copyWith(publisherId: val)),
                   ),
                 ),
                 SizedBox(
@@ -189,8 +200,12 @@ class _BooksScreenState extends State<BooksScreen> {
                   child: TextField(
                     controller: _yearFromController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Год от', border: OutlineInputBorder(), isDense: true),
-                    onSubmitted: (val) => _updateUrl(q.copyWith(yearFrom: int.tryParse(val))),
+                    decoration: const InputDecoration(
+                        labelText: 'Год от',
+                        border: OutlineInputBorder(),
+                        isDense: true),
+                    onSubmitted: (val) =>
+                        _updateUrl(q.copyWith(yearFrom: int.tryParse(val))),
                   ),
                 ),
                 SizedBox(
@@ -198,21 +213,27 @@ class _BooksScreenState extends State<BooksScreen> {
                   child: TextField(
                     controller: _yearToController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Год до', border: OutlineInputBorder(), isDense: true),
-                    onSubmitted: (val) => _updateUrl(q.copyWith(yearTo: int.tryParse(val))),
+                    decoration: const InputDecoration(
+                        labelText: 'Год до',
+                        border: OutlineInputBorder(),
+                        isDense: true),
+                    onSubmitted: (val) =>
+                        _updateUrl(q.copyWith(yearTo: int.tryParse(val))),
                   ),
                 ),
                 FilterChip(
                   label: const Text('Включая удалённые'),
                   selected: q.includeDeleted,
-                  onSelected: (val) => _updateUrl(q.copyWith(includeDeleted: val)),
+                  onSelected: (val) =>
+                      _updateUrl(q.copyWith(includeDeleted: val)),
                 ),
               ],
             ),
             const SizedBox(height: 12),
             if (notifier.hasSelection)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(8),
@@ -230,7 +251,8 @@ class _BooksScreenState extends State<BooksScreen> {
                     FilledButton.icon(
                       icon: const Icon(Icons.delete_outline),
                       label: const Text('Удалить выбранные'),
-                      style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+                      style: FilledButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.error),
                       onPressed: () => _confirmDeleteSelected(context),
                     ),
                   ],
@@ -239,16 +261,21 @@ class _BooksScreenState extends State<BooksScreen> {
             const SizedBox(height: 8),
             Expanded(
               child: switch (notifier.status) {
-                LoadStatus.idle || LoadStatus.loading => const Center(child: CircularProgressIndicator()),
+                LoadStatus.idle ||
+                LoadStatus.loading =>
+                  const Center(child: CircularProgressIndicator()),
                 LoadStatus.error => Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                        const Icon(Icons.error_outline,
+                            color: Colors.red, size: 48),
                         const SizedBox(height: 8),
                         Text(notifier.error ?? 'Произошла ошибка'),
                         const SizedBox(height: 12),
-                        FilledButton(onPressed: () => notifier.load(), child: const Text('Повторить')),
+                        FilledButton(
+                            onPressed: () => notifier.load(),
+                            child: const Text('Повторить')),
                       ],
                     ),
                   ),
@@ -256,7 +283,8 @@ class _BooksScreenState extends State<BooksScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.search_off, size: 48, color: Colors.grey),
+                        const Icon(Icons.search_off,
+                            size: 48, color: Colors.grey),
                         const SizedBox(height: 8),
                         const Text('Книг по заданным фильтрам не найдено'),
                         const SizedBox(height: 12),
@@ -277,7 +305,8 @@ class _BooksScreenState extends State<BooksScreen> {
               pageSize: notifier.result.size,
               totalItems: notifier.result.total,
               onPageChanged: (page) => _updateUrl(q.copyWith(page: page)),
-              onPageSizeChanged: (size) => _updateUrl(q.copyWith(size: size, page: 1)),
+              onPageSizeChanged: (size) =>
+                  _updateUrl(q.copyWith(size: size, page: 1)),
             ),
           ],
         ),
@@ -405,10 +434,14 @@ class _BooksScreenState extends State<BooksScreen> {
               itemBuilder: (ctx) => [
                 const PopupMenuItem(value: 'view', child: Text('Открыть')),
                 if (b.isDeleted)
-                  const PopupMenuItem(value: 'restore', child: Text('Восстановить'))
+                  const PopupMenuItem(
+                      value: 'restore', child: Text('Восстановить'))
                 else
                   const PopupMenuItem(value: 'soft', child: Text('В корзину')),
-                const PopupMenuItem(value: 'hard', child: Text('Удалить насовсем', style: TextStyle(color: Colors.red))),
+                const PopupMenuItem(
+                    value: 'hard',
+                    child: Text('Удалить насовсем',
+                        style: TextStyle(color: Colors.red))),
               ],
             ),
           ),

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../core/api_client.dart';
 
 class ManageLoansScreen extends StatefulWidget {
@@ -47,7 +47,9 @@ class _ManageLoansScreenState extends State<ManageLoansScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(backgroundColor: Colors.red.shade800, content: Text('Ошибка: $e')),
+          SnackBar(
+              backgroundColor: Colors.red.shade800,
+              content: Text('Ошибка: $e')),
         );
       }
     }
@@ -56,7 +58,8 @@ class _ManageLoansScreenState extends State<ManageLoansScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Журнал выдач (Рабочее место библиотекаря)')),
+      appBar: AppBar(
+          title: const Text('Журнал выдач (Рабочее место библиотекаря)')),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
@@ -64,9 +67,11 @@ class _ManageLoansScreenState extends State<ManageLoansScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Ошибка загрузки: $_error', style: const TextStyle(color: Colors.red)),
+                      Text('Ошибка загрузки: $_error',
+                          style: const TextStyle(color: Colors.red)),
                       const SizedBox(height: 12),
-                      FilledButton(onPressed: _load, child: const Text('Повторить')),
+                      FilledButton(
+                          onPressed: _load, child: const Text('Повторить')),
                     ],
                   ),
                 )
@@ -79,9 +84,13 @@ class _ManageLoansScreenState extends State<ManageLoansScreen> {
                         final item = _loans[i];
                         return Card(
                           child: ListTile(
-                            leading: const Icon(Icons.assignment_turned_in, color: Colors.deepPurple),
-                            title: Text(item['bookTitle'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold)),
-                            subtitle: Text('Читатель: ${item['userName']} \vert{} Срок сдачи: ${item['dueDate']}'),
+                            leading: const Icon(Icons.assignment_turned_in,
+                                color: Colors.deepPurple),
+                            title: Text(item['bookTitle'] ?? '',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                            subtitle: Text(
+                                'Читатель: ${item['userName']} \vert{} Срок сдачи: ${item['dueDate']}'),
                             trailing: FilledButton.tonal(
                               onPressed: () => _closeLoan(item['id'] as int),
                               child: const Text('Принять возврат'),

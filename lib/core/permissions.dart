@@ -1,4 +1,4 @@
-﻿import '../models/app_user.dart';
+import '../models/app_user.dart';
 
 bool canManageBooks(AppUser? user) {
   if (user == null) return false;

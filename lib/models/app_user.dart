@@ -1,4 +1,4 @@
-﻿enum Role {
+enum Role {
   admin(3, 'Администратор'),
   librarian(2, 'Библиотекарь'),
   reader(1, 'Читатель');
@@ -34,9 +34,9 @@ class AppUser {
   bool get isReader => role == Role.reader;
 
   factory AppUser.fromJson(Map<String, dynamic> json) => AppUser(
-    id: json['id'] as int? ?? 0,
-    email: json['email'] as String? ?? '',
-    name: json['name'] as String? ?? '',
-    role: Role.fromCode(json['role'] as String?),
-  );
+        id: json['id'] as int? ?? 0,
+        email: json['email'] as String? ?? '',
+        name: json['name'] as String? ?? '',
+        role: Role.fromCode(json['role'] as String?),
+      );
 }

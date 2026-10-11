@@ -1,4 +1,4 @@
-﻿class DictionaryData {
+class DictionaryData {
   static const Map<int, String> genres = {
     1: 'Фантастика',
     2: 'Детектив',

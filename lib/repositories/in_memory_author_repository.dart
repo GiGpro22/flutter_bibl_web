@@ -1,16 +1,25 @@
-﻿import '../models/author.dart';
+import '../models/author.dart';
 import '../models/author_query.dart';
 import '../models/page_result.dart';
 import 'author_repository.dart';
 
 final List<Author> seedAuthors = [
   const Author(id: 1, name: 'Лев Толстой', country: 'Россия', birthYear: 1828),
-  const Author(id: 2, name: 'Фёдор Достоевский', country: 'Россия', birthYear: 1821),
-  const Author(id: 3, name: 'Михаил Булгаков', country: 'СССР', birthYear: 1891),
-  const Author(id: 4, name: 'Джордж Оруэлл', country: 'Великобритания', birthYear: 1903),
-  const Author(id: 5, name: 'Олдос Хаксли', country: 'Великобритания', birthYear: 1894),
-  const Author(id: 6, name: 'Агата Кристи', country: 'Великобритания', birthYear: 1890),
-  const Author(id: 7, name: 'Артур Конан Дойл', country: 'Великобритания', birthYear: 1859),
+  const Author(
+      id: 2, name: 'Фёдор Достоевский', country: 'Россия', birthYear: 1821),
+  const Author(
+      id: 3, name: 'Михаил Булгаков', country: 'СССР', birthYear: 1891),
+  const Author(
+      id: 4, name: 'Джордж Оруэлл', country: 'Великобритания', birthYear: 1903),
+  const Author(
+      id: 5, name: 'Олдос Хаксли', country: 'Великобритания', birthYear: 1894),
+  const Author(
+      id: 6, name: 'Агата Кристи', country: 'Великобритания', birthYear: 1890),
+  const Author(
+      id: 7,
+      name: 'Артур Конан Дойл',
+      country: 'Великобритания',
+      birthYear: 1859),
   const Author(id: 8, name: 'Роберт Мартин', country: 'США', birthYear: 1952),
 ];
 

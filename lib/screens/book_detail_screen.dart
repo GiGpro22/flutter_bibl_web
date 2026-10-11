@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../models/book.dart';
@@ -42,16 +42,20 @@ class BookDetailScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(book.title, style: Theme.of(context).textTheme.headlineMedium),
+                      Text(book.title,
+                          style: Theme.of(context).textTheme.headlineMedium),
                       const SizedBox(height: 8),
-                      Text('ISBN: ${book.isbn}', style: const TextStyle(color: Colors.grey)),
+                      Text('ISBN: ${book.isbn}',
+                          style: const TextStyle(color: Colors.grey)),
                       const Divider(height: 32),
                       _detailRow('Год издания', '${book.year}'),
                       _detailRow('Количество страниц', '${book.pages}'),
-                      _detailRow('Издательство', DictionaryData.publishers[book.publisherId] ?? '-'),
+                      _detailRow('Издательство',
+                          DictionaryData.publishers[book.publisherId] ?? '-'),
                       _detailRow('Всего экземпляров', '${book.copiesTotal}'),
                       _detailRow('Доступно', '${book.copiesAvailable}'),
-                      _detailRow('Статус', book.isDeleted ? 'В корзине (удалена)' : 'Активна'),
+                      _detailRow('Статус',
+                          book.isDeleted ? 'В корзине (удалена)' : 'Активна'),
                     ],
                   ),
                 ),

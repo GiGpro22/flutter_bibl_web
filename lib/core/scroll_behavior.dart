@@ -1,4 +1,4 @@
-﻿import 'package:flutter/gestures.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class AppScrollBehavior extends MaterialScrollBehavior {
@@ -7,5 +7,6 @@ class AppScrollBehavior extends MaterialScrollBehavior {
         PointerDeviceKind.touch,
         PointerDeviceKind.mouse,
         PointerDeviceKind.trackpad,
+        PointerDeviceKind.stylus,
       };
 }

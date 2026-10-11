@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/validators.dart';
 import '../models/author.dart';
@@ -26,7 +26,11 @@ class _AuthorFormScreenState extends State<AuthorFormScreen> {
     super.didChangeDependencies();
     if (_initialized) return;
     if (widget.isEditing) {
-      final author = context.read<LibraryProvider>().authors.cast<Author?>().firstWhere((a) => a?.id == widget.id, orElse: () => null);
+      final author = context
+          .read<LibraryProvider>()
+          .authors
+          .cast<Author?>()
+          .firstWhere((a) => a?.id == widget.id, orElse: () => null);
       if (author != null) {
         _nameController.text = author.name;
         _bioController.text = author.biography;
@@ -62,7 +66,9 @@ class _AuthorFormScreenState extends State<AuthorFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.isEditing ? 'Редактировать автора' : 'Новый автор')),
+      appBar: AppBar(
+          title:
+              Text(widget.isEditing ? 'Редактировать автора' : 'Новый автор')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Form(
@@ -74,20 +80,25 @@ class _AuthorFormScreenState extends State<AuthorFormScreen> {
               TextFormField(
                 controller: _nameController,
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(labelText: 'Имя автора *', border: OutlineInputBorder()),
-                validator: V.combine([V.required(), V.length(min: 2, max: 100)]),
+                decoration: const InputDecoration(
+                    labelText: 'Имя автора *', border: OutlineInputBorder()),
+                validator:
+                    V.combine([V.required(), V.length(min: 2, max: 100)]),
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _bioController,
                 maxLines: 4,
-                decoration: const InputDecoration(labelText: 'Биография', border: OutlineInputBorder()),
+                decoration: const InputDecoration(
+                    labelText: 'Биография', border: OutlineInputBorder()),
                 validator: V.length(max: 1000),
               ),
               const SizedBox(height: 32),
               FilledButton(
                 onPressed: _isSaving ? null : _submit,
-                child: Text(widget.isEditing ? 'Сохранить изменения' : 'Создать автора'),
+                child: Text(widget.isEditing
+                    ? 'Сохранить изменения'
+                    : 'Создать автора'),
               ),
             ],
           ),

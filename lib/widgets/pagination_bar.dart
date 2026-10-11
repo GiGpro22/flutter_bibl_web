@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class PaginationBar extends StatelessWidget {
   final int currentPage;
@@ -20,7 +20,9 @@ class PaginationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final totalPages = totalItems == 0 ? 1 : (totalItems / pageSize).ceil();
     final from = totalItems == 0 ? 0 : (currentPage - 1) * pageSize + 1;
-    final to = (currentPage * pageSize) > totalItems ? totalItems : (currentPage * pageSize);
+    final to = (currentPage * pageSize) > totalItems
+        ? totalItems
+        : (currentPage * pageSize);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
@@ -59,7 +61,9 @@ class PaginationBar extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.chevron_left),
                 tooltip: 'Предыдущая',
-                onPressed: currentPage > 1 ? () => onPageChanged(currentPage - 1) : null,
+                onPressed: currentPage > 1
+                    ? () => onPageChanged(currentPage - 1)
+                    : null,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -68,12 +72,16 @@ class PaginationBar extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.chevron_right),
                 tooltip: 'Следующая',
-                onPressed: currentPage < totalPages ? () => onPageChanged(currentPage + 1) : null,
+                onPressed: currentPage < totalPages
+                    ? () => onPageChanged(currentPage + 1)
+                    : null,
               ),
               IconButton(
                 icon: const Icon(Icons.last_page),
                 tooltip: 'Последняя страница',
-                onPressed: currentPage < totalPages ? () => onPageChanged(totalPages) : null,
+                onPressed: currentPage < totalPages
+                    ? () => onPageChanged(totalPages)
+                    : null,
               ),
             ],
           ),

@@ -1,7 +1,8 @@
-﻿typedef Validator = String? Function(String?);
+typedef Validator = String? Function(String?);
 
 class V {
-  static Validator required([String message = 'Поле обязательно для заполнения']) {
+  static Validator required(
+      [String message = 'Поле обязательно для заполнения']) {
     return (value) => (value == null || value.trim().isEmpty) ? message : null;
   }
 
@@ -14,7 +15,8 @@ class V {
     };
   }
 
-  static Validator integer({int? min, int? max, String message = 'Введите целое число'}) {
+  static Validator integer(
+      {int? min, int? max, String message = 'Введите целое число'}) {
     return (value) {
       final text = value?.trim() ?? '';
       final n = int.tryParse(text);
@@ -31,7 +33,8 @@ class V {
   }
 
   static Validator isbn([String message = 'Некорректный формат ISBN']) {
-    final re = RegExp(r'^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$');
+    final re = RegExp(
+        r'^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$');
     return (value) {
       final text = value?.trim() ?? '';
       if (text.isEmpty) return null;

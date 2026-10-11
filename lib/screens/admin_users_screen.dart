@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../core/api_client.dart';
 import '../models/app_user.dart';
 
@@ -22,10 +22,12 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
   Future<void> _load() async {
     try {
       final res = await buildDio().get('/admin/users');
-      final list = (res.data['items'] as List).map((e) => AppUser.fromJson(e as Map<String, dynamic>)).toList();
+      final list = (res.data['items'] as List)
+          .map((e) => AppUser.fromJson(e as Map<String, dynamic>))
+          .toList();
       setState(() => _users = list);
-    } catch (_) {}
-    finally {
+    } catch (_) {
+    } finally {
       if (mounted) setState(() => _loading = false);
     }
   }
@@ -33,7 +35,8 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Управление пользователями (Администратор)')),
+      appBar: AppBar(
+          title: const Text('Управление пользователями (Администратор)')),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : ListView.separated(
@@ -42,7 +45,8 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
               itemBuilder: (ctx, i) {
                 final u = _users[i];
                 return ListTile(
-                  leading: CircleAvatar(child: Text(u.role.name.substring(0, 1).toUpperCase())),
+                  leading: CircleAvatar(
+                      child: Text(u.role.name.substring(0, 1).toUpperCase())),
                   title: Text(u.name),
                   subtitle: Text(u.email),
                   trailing: Chip(label: Text(u.role.label)),

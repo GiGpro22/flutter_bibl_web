@@ -1,4 +1,4 @@
-﻿import '../models/book.dart';
+import '../models/book.dart';
 import '../models/book_query.dart';
 import '../models/page_result.dart';
 

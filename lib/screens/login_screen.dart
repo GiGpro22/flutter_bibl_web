@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../core/api_exceptions.dart';
@@ -22,10 +22,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate() || _isLoading) return;
-    setState(() { _isLoading = true; _errorMessage = null; });
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
     try {
-      await context.read<AuthNotifier>().login(_emailController.text, _passwordController.text);
+      await context
+          .read<AuthNotifier>()
+          .login(_emailController.text, _passwordController.text);
       if (mounted) {
         context.go(widget.from ?? '/');
       }
@@ -55,19 +60,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text('Авторизация', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                    const Text('Авторизация',
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 16),
                     if (_errorMessage != null)
                       Container(
                         padding: const EdgeInsets.all(10),
                         margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(color: Colors.red.shade100, borderRadius: BorderRadius.circular(8)),
-                        child: Text(_errorMessage!, style: TextStyle(color: Colors.red.shade900)),
+                        decoration: BoxDecoration(
+                            color: Colors.red.shade100,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Text(_errorMessage!,
+                            style: TextStyle(color: Colors.red.shade900)),
                       ),
                     TextFormField(
                       controller: _emailController,
-                      decoration: const InputDecoration(labelText: 'Email', prefixIcon: Icon(Icons.email), border: OutlineInputBorder()),
-                      validator: (val) => val == null || val.isEmpty ? 'Введите email' : null,
+                      decoration: const InputDecoration(
+                          labelText: 'Email',
+                          prefixIcon: Icon(Icons.email),
+                          border: OutlineInputBorder()),
+                      validator: (val) =>
+                          val == null || val.isEmpty ? 'Введите email' : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -78,16 +92,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         prefixIcon: const Icon(Icons.lock),
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
-                          icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
+                          icon: Icon(_obscure
+                              ? Icons.visibility
+                              : Icons.visibility_off),
                           onPressed: () => setState(() => _obscure = !_obscure),
                         ),
                       ),
-                      validator: (val) => val == null || val.isEmpty ? 'Введите пароль' : null,
+                      validator: (val) =>
+                          val == null || val.isEmpty ? 'Введите пароль' : null,
                     ),
                     const SizedBox(height: 24),
                     FilledButton(
                       onPressed: _isLoading ? null : _submit,
-                      child: _isLoading ? const CircularProgressIndicator(color: Colors.white) : const Text('Войти'),
+                      child: _isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text('Войти'),
                     ),
                     const SizedBox(height: 12),
                     TextButton(
@@ -95,8 +114,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Text('Нет аккаунта? Зарегистрироваться'),
                     ),
                     const Divider(),
-                    const Text('Тестовые аккаунты (пароль Password123!):', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                    const Text('• admin@bibl.ru (Администратор)\n• lib@bibl.ru (Библиотекарь)\n• reader@bibl.ru (Читатель)', style: TextStyle(fontSize: 11)),
+                    const Text('Тестовые аккаунты (пароль Password123!):',
+                        style: TextStyle(fontSize: 12, color: Colors.grey)),
+                    const Text(
+                        '• admin@bibl.ru (Администратор)\n• lib@bibl.ru (Библиотекарь)\n• reader@bibl.ru (Читатель)',
+                        style: TextStyle(fontSize: 11)),
                   ],
                 ),
               ),

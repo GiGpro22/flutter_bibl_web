@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/validators.dart';
 import '../models/publisher.dart';
@@ -26,7 +26,11 @@ class _PublisherFormScreenState extends State<PublisherFormScreen> {
     super.didChangeDependencies();
     if (_initialized) return;
     if (widget.isEditing) {
-      final publisher = context.read<LibraryProvider>().publishers.cast<Publisher?>().firstWhere((p) => p?.id == widget.id, orElse: () => null);
+      final publisher = context
+          .read<LibraryProvider>()
+          .publishers
+          .cast<Publisher?>()
+          .firstWhere((p) => p?.id == widget.id, orElse: () => null);
       if (publisher != null) {
         _nameController.text = publisher.name;
         _cityController.text = publisher.city;
@@ -62,7 +66,10 @@ class _PublisherFormScreenState extends State<PublisherFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.isEditing ? 'Редактировать издательство' : 'Новое издательство')),
+      appBar: AppBar(
+          title: Text(widget.isEditing
+              ? 'Редактировать издательство'
+              : 'Новое издательство')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Form(
@@ -74,21 +81,27 @@ class _PublisherFormScreenState extends State<PublisherFormScreen> {
               TextFormField(
                 controller: _nameController,
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(labelText: 'Название издательства *', border: OutlineInputBorder()),
-                validator: V.combine([V.required(), V.length(min: 2, max: 100)]),
+                decoration: const InputDecoration(
+                    labelText: 'Название издательства *',
+                    border: OutlineInputBorder()),
+                validator:
+                    V.combine([V.required(), V.length(min: 2, max: 100)]),
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _cityController,
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (_) => _submit(),
-                decoration: const InputDecoration(labelText: 'Город *', border: OutlineInputBorder()),
+                decoration: const InputDecoration(
+                    labelText: 'Город *', border: OutlineInputBorder()),
                 validator: V.combine([V.required(), V.length(min: 2, max: 50)]),
               ),
               const SizedBox(height: 32),
               FilledButton(
                 onPressed: _isSaving ? null : _submit,
-                child: Text(widget.isEditing ? 'Сохранить изменения' : 'Создать издательство'),
+                child: Text(widget.isEditing
+                    ? 'Сохранить изменения'
+                    : 'Создать издательство'),
               ),
             ],
           ),

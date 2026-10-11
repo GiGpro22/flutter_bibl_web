@@ -1,4 +1,4 @@
-﻿import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import '../models/author.dart';
 import '../models/author_query.dart';
 import '../models/page_result.dart';

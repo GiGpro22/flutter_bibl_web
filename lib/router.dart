@@ -1,4 +1,4 @@
-﻿import 'package:go_router/go_router.dart';
+import 'package:go_router/go_router.dart';
 import 'core/permissions.dart';
 import 'screens/admin_users_screen.dart';
 import 'screens/book_details_screen.dart';
@@ -39,16 +39,20 @@ GoRouter createRouter(AuthNotifier auth) {
           GoRoute(
             path: 'books/new',
             builder: (c, s) => const BookFormScreen(),
-            redirect: (context, state) => canManageBooks(auth.user) ? null : '/forbidden',
+            redirect: (context, state) =>
+                canManageBooks(auth.user) ? null : '/forbidden',
           ),
           GoRoute(
             path: 'books/:id',
-            builder: (c, s) => BookDetailsScreen(id: int.tryParse(s.pathParameters['id'] ?? '') ?? 0),
+            builder: (c, s) => BookDetailsScreen(
+                id: int.tryParse(s.pathParameters['id'] ?? '') ?? 0),
           ),
           GoRoute(
             path: 'books/:id/edit',
-            builder: (c, s) => BookFormScreen(id: int.tryParse(s.pathParameters['id'] ?? '')),
-            redirect: (context, state) => canManageBooks(auth.user) ? null : '/forbidden',
+            builder: (c, s) =>
+                BookFormScreen(id: int.tryParse(s.pathParameters['id'] ?? '')),
+            redirect: (context, state) =>
+                canManageBooks(auth.user) ? null : '/forbidden',
           ),
         ],
       ),
@@ -63,17 +67,20 @@ GoRouter createRouter(AuthNotifier auth) {
       GoRoute(
         path: '/my-loans',
         builder: (c, s) => const MyLoansScreen(),
-        redirect: (context, state) => canViewMyLoans(auth.user) ? null : '/forbidden',
+        redirect: (context, state) =>
+            canViewMyLoans(auth.user) ? null : '/forbidden',
       ),
       GoRoute(
         path: '/manage-loans',
         builder: (c, s) => const ManageLoansScreen(),
-        redirect: (context, state) => canManageLoans(auth.user) ? null : '/forbidden',
+        redirect: (context, state) =>
+            canManageLoans(auth.user) ? null : '/forbidden',
       ),
       GoRoute(
         path: '/admin/users',
         builder: (c, s) => const AdminUsersScreen(),
-        redirect: (context, state) => canManageUsers(auth.user) ? null : '/forbidden',
+        redirect: (context, state) =>
+            canManageUsers(auth.user) ? null : '/forbidden',
       ),
       GoRoute(
         path: '/forbidden',

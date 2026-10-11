@@ -1,4 +1,4 @@
-﻿class AuthorQuery {
+class AuthorQuery {
   final String search;
   final String? country;
   final String sortField;

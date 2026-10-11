@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../core/permissions.dart';
@@ -30,7 +30,8 @@ class BookDetailsScreen extends StatelessWidget {
             children: [
               const Icon(Icons.menu_book, size: 64, color: Colors.grey),
               const SizedBox(height: 16),
-              const Text('Книга не найдена или была удалена', style: TextStyle(fontSize: 18)),
+              const Text('Книга не найдена или была удалена',
+                  style: TextStyle(fontSize: 18)),
               const SizedBox(height: 16),
               FilledButton.tonal(
                 onPressed: () => context.go('/'),
@@ -46,8 +47,10 @@ class BookDetailsScreen extends StatelessWidget {
           (p) => p?.id == book.publisherId,
           orElse: () => null,
         );
-    final bookAuthors = provider.authors.where((a) => book.authorIds.contains(a.id)).toList();
-    final bookGenres = provider.genres.where((g) => book.genreIds.contains(g.id)).toList();
+    final bookAuthors =
+        provider.authors.where((a) => book.authorIds.contains(a.id)).toList();
+    final bookGenres =
+        provider.genres.where((g) => book.genreIds.contains(g.id)).toList();
     final hasCopies = book.copiesAvailable > 0;
 
     return Scaffold(
@@ -86,13 +89,16 @@ class BookDetailsScreen extends StatelessWidget {
                           width: 80,
                           height: 110,
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primaryContainer,
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
                             Icons.auto_stories,
                             size: 48,
-                            color: Theme.of(context).colorScheme.onPrimaryContainer,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer,
                           ),
                         ),
                         const SizedBox(width: 20),
@@ -102,20 +108,28 @@ class BookDetailsScreen extends StatelessWidget {
                             children: [
                               Text(
                                 book.title,
-                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 'ISBN: ${book.isbn}',
-                                style: TextStyle(color: Colors.grey.shade700, fontSize: 15),
+                                style: TextStyle(
+                                    color: Colors.grey.shade700, fontSize: 15),
                               ),
                               const SizedBox(height: 8),
                               Chip(
                                 avatar: Icon(
-                                  hasCopies ? Icons.check_circle : Icons.remove_circle,
-                                  color: hasCopies ? Colors.green.shade800 : Colors.red.shade800,
+                                  hasCopies
+                                      ? Icons.check_circle
+                                      : Icons.remove_circle,
+                                  color: hasCopies
+                                      ? Colors.green.shade800
+                                      : Colors.red.shade800,
                                   size: 18,
                                 ),
                                 label: Text(
@@ -124,10 +138,14 @@ class BookDetailsScreen extends StatelessWidget {
                                       : 'Нет доступных экземпляров (всего ${book.copiesTotal})',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    color: hasCopies ? Colors.green.shade900 : Colors.red.shade900,
+                                    color: hasCopies
+                                        ? Colors.green.shade900
+                                        : Colors.red.shade900,
                                   ),
                                 ),
-                                backgroundColor: hasCopies ? Colors.green.shade50 : Colors.red.shade50,
+                                backgroundColor: hasCopies
+                                    ? Colors.green.shade50
+                                    : Colors.red.shade50,
                               ),
                             ],
                           ),
@@ -145,7 +163,8 @@ class BookDetailsScreen extends StatelessWidget {
                               runSpacing: 8,
                               children: bookAuthors
                                   .map((a) => Chip(
-                                        avatar: const Icon(Icons.person, size: 16),
+                                        avatar:
+                                            const Icon(Icons.person, size: 16),
                                         label: Text('${a.name} (${a.country})'),
                                       ))
                                   .toList(),
@@ -162,7 +181,8 @@ class BookDetailsScreen extends StatelessWidget {
                               runSpacing: 8,
                               children: bookGenres
                                   .map((g) => Chip(
-                                        avatar: const Icon(Icons.category, size: 16),
+                                        avatar: const Icon(Icons.category,
+                                            size: 16),
                                         label: Text(g.name),
                                       ))
                                   .toList(),
@@ -199,7 +219,8 @@ class BookDetailsScreen extends StatelessWidget {
                         const SizedBox(width: 12),
                         if (canManageBooks(auth.user))
                           FilledButton.icon(
-                            onPressed: () => context.go('/books/${book.id}/edit'),
+                            onPressed: () =>
+                                context.go('/books/${book.id}/edit'),
                             icon: const Icon(Icons.edit),
                             label: const Text('Редактировать'),
                           ),
@@ -215,13 +236,17 @@ class BookDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoSection(BuildContext context, {required String title, required Widget child}) {
+  Widget _buildInfoSection(BuildContext context,
+      {required String title, required Widget child}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey.shade700),
+          style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade700),
         ),
         const SizedBox(height: 6),
         child,

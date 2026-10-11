@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'core/scroll_behavior.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -55,11 +56,14 @@ class _WebBiblAppState extends State<WebBiblApp> {
         if (auth.isAuthenticated) {
           auth.logout();
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Сессия завершена из-за отсутствия активности (3 мин)')),
+            const SnackBar(
+                content: Text(
+                    'Сессия завершена из-за отсутствия активности (3 мин)')),
           );
         }
       },
       child: MaterialApp.router(
+        scrollBehavior: AppScrollBehavior(),
         title: 'Библиотека (ПР5: Аутентификация)',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

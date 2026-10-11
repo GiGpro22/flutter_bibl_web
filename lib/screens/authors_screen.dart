@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -126,14 +126,16 @@ class _AuthorsScreenState extends State<AuthorsScreen> {
                 FilterChip(
                   label: const Text('Включая удалённых'),
                   selected: q.includeDeleted,
-                  onSelected: (val) => _updateUrl(q.copyWith(includeDeleted: val)),
+                  onSelected: (val) =>
+                      _updateUrl(q.copyWith(includeDeleted: val)),
                 ),
               ],
             ),
             const SizedBox(height: 12),
             if (notifier.hasSelection)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 margin: const EdgeInsets.only(bottom: 8),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primaryContainer,
@@ -144,7 +146,8 @@ class _AuthorsScreenState extends State<AuthorsScreen> {
                     Text('Выбрано: ${notifier.selected.length}'),
                     const Spacer(),
                     FilledButton(
-                      style: FilledButton.styleFrom(backgroundColor: Colors.red),
+                      style:
+                          FilledButton.styleFrom(backgroundColor: Colors.red),
                       onPressed: () => notifier.deleteSelected(),
                       child: const Text('Удалить выбранных'),
                     ),
@@ -153,9 +156,13 @@ class _AuthorsScreenState extends State<AuthorsScreen> {
               ),
             Expanded(
               child: switch (notifier.status) {
-                LoadStatus.idle || LoadStatus.loading => const Center(child: CircularProgressIndicator()),
-                LoadStatus.error => Center(child: Text(notifier.error ?? 'Ошибка')),
-                LoadStatus.success when notifier.result.items.isEmpty => const Center(child: Text('Авторов не найдено')),
+                LoadStatus.idle ||
+                LoadStatus.loading =>
+                  const Center(child: CircularProgressIndicator()),
+                LoadStatus.error =>
+                  Center(child: Text(notifier.error ?? 'Ошибка')),
+                LoadStatus.success when notifier.result.items.isEmpty =>
+                  const Center(child: Text('Авторов не найдено')),
                 LoadStatus.success => compact
                     ? ListView.builder(
                         itemCount: notifier.result.items.length,
@@ -165,10 +172,12 @@ class _AuthorsScreenState extends State<AuthorsScreen> {
                             child: ListTile(
                               leading: Checkbox(
                                 value: notifier.selected.contains(a.id),
-                                onChanged: (_) => notifier.toggleSelection(a.id),
+                                onChanged: (_) =>
+                                    notifier.toggleSelection(a.id),
                               ),
                               title: Text(a.name),
-                              subtitle: Text('${a.country}, родился в ${a.birthYear}'),
+                              subtitle: Text(
+                                  '${a.country}, родился в ${a.birthYear}'),
                               onTap: () => context.go('/authors/${a.id}'),
                             ),
                           );
@@ -183,8 +192,10 @@ class _AuthorsScreenState extends State<AuthorsScreen> {
                         sortField: q.sortField,
                         sortAscending: q.sortAscending,
                         onSort: (field) {
-                          final asc = field == q.sortField ? !q.sortAscending : true;
-                          _updateUrl(q.copyWith(sortField: field, sortAscending: asc));
+                          final asc =
+                              field == q.sortField ? !q.sortAscending : true;
+                          _updateUrl(
+                              q.copyWith(sortField: field, sortAscending: asc));
                         },
                         columns: [
                           TableColumnSpec(
@@ -193,7 +204,9 @@ class _AuthorsScreenState extends State<AuthorsScreen> {
                             build: (a) => Text(
                               a.name,
                               style: TextStyle(
-                                decoration: a.isDeleted ? TextDecoration.lineThrough : null,
+                                decoration: a.isDeleted
+                                    ? TextDecoration.lineThrough
+                                    : null,
                               ),
                             ),
                           ),
@@ -216,7 +229,8 @@ class _AuthorsScreenState extends State<AuthorsScreen> {
                           ),
                           if (a.isDeleted)
                             IconButton(
-                              icon: const Icon(Icons.restore, color: Colors.green),
+                              icon: const Icon(Icons.restore,
+                                  color: Colors.green),
                               onPressed: () => notifier.restore(a.id),
                             )
                           else
@@ -225,7 +239,8 @@ class _AuthorsScreenState extends State<AuthorsScreen> {
                               onPressed: () => notifier.softDelete(a.id),
                             ),
                           IconButton(
-                            icon: const Icon(Icons.delete_forever, color: Colors.red),
+                            icon: const Icon(Icons.delete_forever,
+                                color: Colors.red),
                             onPressed: () => notifier.hardDelete(a.id),
                           ),
                         ],
@@ -237,7 +252,8 @@ class _AuthorsScreenState extends State<AuthorsScreen> {
               pageSize: notifier.result.size,
               totalItems: notifier.result.total,
               onPageChanged: (p) => _updateUrl(q.copyWith(page: p)),
-              onPageSizeChanged: (s) => _updateUrl(q.copyWith(size: s, page: 1)),
+              onPageSizeChanged: (s) =>
+                  _updateUrl(q.copyWith(size: s, page: 1)),
             ),
           ],
         ),

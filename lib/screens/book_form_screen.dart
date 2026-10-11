@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/api_exceptions.dart';
 import '../core/validators.dart';
@@ -47,9 +47,11 @@ class _BookFormScreenState extends State<BookFormScreen> {
     if (_initialized) return;
 
     if (widget.isEditing) {
-      final book = context.read<LibraryProvider>().books.cast<Book?>().firstWhere(
-        (b) => b?.id == widget.id, orElse: () => null,
-      );
+      final book =
+          context.read<LibraryProvider>().books.cast<Book?>().firstWhere(
+                (b) => b?.id == widget.id,
+                orElse: () => null,
+              );
       if (book != null) {
         _titleController.text = book.title;
         _isbnController.text = book.isbn;
@@ -106,7 +108,8 @@ class _BookFormScreenState extends State<BookFormScreen> {
                   labelText: 'Название издательства *',
                   border: OutlineInputBorder(),
                 ),
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Введите название' : null,
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Введите название' : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -115,16 +118,21 @@ class _BookFormScreenState extends State<BookFormScreen> {
                   labelText: 'Город *',
                   border: OutlineInputBorder(),
                 ),
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Введите город' : null,
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Введите город' : null,
               ),
             ],
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Отмена')),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Отмена')),
           FilledButton(
             onPressed: () {
-              if (dialogFormKey.currentState!.validate()) Navigator.of(ctx).pop(true);
+              if (dialogFormKey.currentState!.validate()) {
+                Navigator.of(ctx).pop(true);
+              }
             },
             child: const Text('Добавить'),
           ),
@@ -170,7 +178,9 @@ class _BookFormScreenState extends State<BookFormScreen> {
                   labelText: 'ФИО автора *',
                   border: OutlineInputBorder(),
                 ),
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Введите имя автора' : null,
+                validator: (v) => (v == null || v.trim().isEmpty)
+                    ? 'Введите имя автора'
+                    : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -184,10 +194,14 @@ class _BookFormScreenState extends State<BookFormScreen> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Отмена')),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Отмена')),
           FilledButton(
             onPressed: () {
-              if (dialogFormKey.currentState!.validate()) Navigator.of(ctx).pop(true);
+              if (dialogFormKey.currentState!.validate()) {
+                Navigator.of(ctx).pop(true);
+              }
             },
             child: const Text('Добавить'),
           ),
@@ -201,7 +215,8 @@ class _BookFormScreenState extends State<BookFormScreen> {
     final newAuthor = Author.fromJson({
       'id': 0,
       'name': nameCtrl.text.trim(),
-      'country': countryCtrl.text.trim().isEmpty ? 'Россия' : countryCtrl.text.trim(),
+      'country':
+          countryCtrl.text.trim().isEmpty ? 'Россия' : countryCtrl.text.trim(),
       'birthYear': 1980,
       'biography': '',
     });
@@ -229,14 +244,20 @@ class _BookFormScreenState extends State<BookFormScreen> {
               labelText: 'Название жанра *',
               border: OutlineInputBorder(),
             ),
-            validator: (v) => (v == null || v.trim().isEmpty) ? 'Введите название жанра' : null,
+            validator: (v) => (v == null || v.trim().isEmpty)
+                ? 'Введите название жанра'
+                : null,
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Отмена')),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Отмена')),
           FilledButton(
             onPressed: () {
-              if (dialogFormKey.currentState!.validate()) Navigator.of(ctx).pop(true);
+              if (dialogFormKey.currentState!.validate()) {
+                Navigator.of(ctx).pop(true);
+              }
             },
             child: const Text('Добавить'),
           ),
@@ -257,10 +278,11 @@ class _BookFormScreenState extends State<BookFormScreen> {
 
     if (_publisherId != null) {
       final currentPub = provider.publishers.cast<Publisher?>().firstWhere(
-        (p) => p?.id == _publisherId,
-        orElse: () => null,
-      );
-      if (currentPub != null && !currentPub.supportedGenreIds.contains(added.id)) {
+            (p) => p?.id == _publisherId,
+            orElse: () => null,
+          );
+      if (currentPub != null &&
+          !currentPub.supportedGenreIds.contains(added.id)) {
         final updatedPub = Publisher.fromJson({
           'id': currentPub.id,
           'name': currentPub.name,
@@ -299,7 +321,10 @@ class _BookFormScreenState extends State<BookFormScreen> {
       _isDirty = false;
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(widget.isEditing ? 'Книга обновлена на сервере' : 'Книга создана на сервере')),
+          SnackBar(
+              content: Text(widget.isEditing
+                  ? 'Книга обновлена на сервере'
+                  : 'Книга создана на сервере')),
         );
         Navigator.of(context).pop();
       }
@@ -309,7 +334,8 @@ class _BookFormScreenState extends State<BookFormScreen> {
     } on ConflictException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(backgroundColor: Colors.red.shade700, content: Text(e.message)),
+          SnackBar(
+              backgroundColor: Colors.red.shade700, content: Text(e.message)),
         );
       }
     } on ApiException catch (e) {
@@ -331,15 +357,20 @@ class _BookFormScreenState extends State<BookFormScreen> {
 
     Publisher? selectedPub;
     if (_publisherId != null) {
-      selectedPub = publishers.cast<Publisher?>().firstWhere((p) => p?.id == _publisherId, orElse: () => null);
+      selectedPub = publishers
+          .cast<Publisher?>()
+          .firstWhere((p) => p?.id == _publisherId, orElse: () => null);
     }
 
     final availableGenres = selectedPub == null
         ? provider.genres
-        : provider.genres.where((g) => selectedPub!.supportedGenreIds.contains(g.id)).toList();
+        : provider.genres
+            .where((g) => selectedPub!.supportedGenreIds.contains(g.id))
+            .toList();
 
     return EntityFormScaffold(
-      title: widget.isEditing ? 'Редактировать книгу' : 'Новая книга (REST API)',
+      title:
+          widget.isEditing ? 'Редактировать книгу' : 'Новая книга (REST API)',
       formKey: _formKey,
       isDirty: _isDirty,
       isSaving: _isSaving,
@@ -378,7 +409,8 @@ class _BookFormScreenState extends State<BookFormScreen> {
                 child: TextFormField(
                   controller: _yearController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Год издания', border: OutlineInputBorder()),
+                  decoration: const InputDecoration(
+                      labelText: 'Год издания', border: OutlineInputBorder()),
                   validator: V.integer(min: 1450, max: DateTime.now().year + 1),
                 ),
               ),
@@ -387,7 +419,8 @@ class _BookFormScreenState extends State<BookFormScreen> {
                 child: TextFormField(
                   controller: _pagesController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Страниц', border: OutlineInputBorder()),
+                  decoration: const InputDecoration(
+                      labelText: 'Страниц', border: OutlineInputBorder()),
                   validator: V.integer(min: 1, max: 10000),
                 ),
               ),
@@ -397,7 +430,8 @@ class _BookFormScreenState extends State<BookFormScreen> {
           TextFormField(
             controller: _copiesTotalController,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(labelText: 'Всего экземпляров *', border: OutlineInputBorder()),
+            decoration: const InputDecoration(
+                labelText: 'Всего экземпляров *', border: OutlineInputBorder()),
             validator: V.combine([V.required(), V.integer(min: 0)]),
           ),
           const SizedBox(height: 20),
@@ -406,14 +440,22 @@ class _BookFormScreenState extends State<BookFormScreen> {
             children: [
               Expanded(
                 child: DropdownButtonFormField<int>(
-                  value: publishers.any((p) => p.id == _publisherId) ? _publisherId : null,
-                  decoration: const InputDecoration(labelText: 'Издательство (справочник) *', border: OutlineInputBorder()),
-                  items: publishers.map((p) => DropdownMenuItem(value: p.id, child: Text('${p.name} (${p.city})'))).toList(),
+                  value: publishers.any((p) => p.id == _publisherId)
+                      ? _publisherId
+                      : null,
+                  decoration: const InputDecoration(
+                      labelText: 'Издательство (справочник) *',
+                      border: OutlineInputBorder()),
+                  items: publishers
+                      .map((p) => DropdownMenuItem(
+                          value: p.id, child: Text('${p.name} (${p.city})')))
+                      .toList(),
                   onChanged: (val) {
                     _markDirty();
                     setState(() => _publisherId = val);
                   },
-                  validator: (val) => val == null ? 'Выберите издательство' : null,
+                  validator: (val) =>
+                      val == null ? 'Выберите издательство' : null,
                 ),
               ),
               const SizedBox(width: 8),
@@ -429,7 +471,8 @@ class _BookFormScreenState extends State<BookFormScreen> {
           ),
           const SizedBox(height: 20),
           FormField<List<int>>(
-            validator: (_) => _authorIds.isEmpty ? 'Выберите хотя бы одного автора' : null,
+            validator: (_) =>
+                _authorIds.isEmpty ? 'Выберите хотя бы одного автора' : null,
             builder: (field) {
               return InputDecorator(
                 decoration: InputDecoration(
